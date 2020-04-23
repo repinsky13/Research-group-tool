@@ -13,11 +13,11 @@ import time
 #commit_start = int(input("How many commits ago do you want to start the process with"))
 
 #below: the url and directory which you want to clone into
-localdirectory = "D:\\Documents\\Group research project\\Research tool test\\newest\\researchtool"
-testinggiturl = "https://github.com/tigerater/researchtool.git"
+localdirectory = "/Users/vladrepinskiy/Dropbox/Local/dev/Research-group-tool/testdata/clonetest2"
+testinggiturl = "https://github.com/repinsky13/clonetest2"
 #below: url and directory of the project you want to clone (for the directoy replace \ with \\)
-gitdirectory = "D:\\Documents\\Group research project\\react"
-giturl = "https://github.com/facebook/react.git"
+gitdirectory = "/Users/vladrepinskiy/Dropbox/Local/dev/Research-group-tool/testdata/vscode"
+giturl = "https://github.com/microsoft/vscode"
 
 
 #print(list(repo.git.log(p=True)))
@@ -29,8 +29,8 @@ giturl = "https://github.com/facebook/react.git"
 def add_diff_files(dcmp):
     for name in dcmp.right_only:
         #print(name)
-        origin = dcmp.right + "\\" + name
-        destfolder = dcmp.left + "\\" + name
+        origin = dcmp.right + "/" + name
+        destfolder = dcmp.left + "/" + name
         destination = dcmp.left
         if os.path.isfile(origin):
             shutil.copy(origin, destination)
@@ -44,7 +44,7 @@ def add_diff_files(dcmp):
 def delete_diff_files(dcmp):
     for name in dcmp.left_only:
         #print(name)
-        todelete = dcmp.left + "\\" + name
+        todelete = dcmp.left + "/" + name
         if os.path.isfile(todelete):
             os.remove(todelete)
         else:
@@ -55,8 +55,8 @@ def delete_diff_files(dcmp):
 def merge_diff_files(dcmp):
     for name in dcmp.diff_files:
         #print(name)
-        origin = dcmp.right + "\\" + name
-        destfolder = dcmp.left + "\\" + name
+        origin = dcmp.right + "/" + name
+        destfolder = dcmp.left + "/" + name
         destination = dcmp.left
         if os.path.isfile(origin):
             os.remove(destfolder)
@@ -72,7 +72,7 @@ current_original_commit = 0
 
 
 def main():
-    #make sure the directory is empty
+    # make sure the directory is empty
     if not os.listdir(gitdirectory):
         repo = git.Repo.clone_from(giturl, gitdirectory, branch = 'master')
         
@@ -92,9 +92,12 @@ def main():
 
     print("quit to quit, current to check current commit sha, < for past one, > for future one, number for type commit number you want, \"complete\" to go back to a commit and update commits until up to newest")
     iterate = 0
+    counter = 0
     while stay:
         if iterate == 0:
             userinput = input("input: ")
+        if counter == 10:
+            stay = False
         if userinput == "quit":
             stay = False
         elif userinput == "current":
@@ -128,10 +131,12 @@ def main():
                 else:
                     start_time = time.time()
                     current_original_commit = firstcommitnumber - 1
+                    counter += 1
                     iterate = 1
             if iterate == 1:
                 if current_original_commit > 0:
-                    current_original_commit -=1
+                    current_original_commit -= 1  
+                    counter += 1
                 else:
                     time_elapsed = time.time() - start_time
                     print("You have reached the final newest commit (shown below) in " + str(time_elapsed))
