@@ -31,7 +31,8 @@ def issues_count(hashes):
         issues = repo.get_issues(state = "open")
         for issue in issues:
             if (issue.created_at < commit_date):
-                issue_count += 1    
+                if (config.current_debt_label in issue.labels or "debt" in issue.body):
+                    issue_count += 1    
         print("Open issues: " + str(issue_count))
         write_to_file(f, hash, commit_date, issue_count)
     f.close()
